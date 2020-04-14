@@ -1,0 +1,3 @@
+# MoneyKeeper
+
+Training project.
