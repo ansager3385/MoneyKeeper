@@ -1,3 +1,3 @@
 # MoneyKeeper
 
-Training project.
+My first training javascript project.
