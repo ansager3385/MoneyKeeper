@@ -26,12 +26,16 @@ let
 
 let money, time;
 
-startBtn.addEventListener('click', function () {
-  time = prompt("Введите дату в формате YYYY-MM-DD", "");
-  money = +prompt("Ваш бюджет на месяц?", "");
+expensesBtn.disabled = true;
+optionalExpensesBtn.disabled = true;
+countBtn.disabled = true;
 
-  while (isNaN(money) || money == "" || money == null) {
-    money = +prompt("Ваш бюджет на месяц?", "");
+startBtn.addEventListener('click', () => {
+  time = prompt('Введите дату в формате YYYY-MM-DD', '');
+  money = +prompt("Ваш бюджет на месяц?", '');
+
+  while (isNaN(money) || money == '' || money == null) {
+    money = prompt("Ваш бюджет?", "");
   }
   appData.budget = money;
   appData.timeData = time;
@@ -39,63 +43,65 @@ startBtn.addEventListener('click', function () {
   yearValue.value = new Date(Date.parse(time)).getFullYear();
   monthValue.value = new Date(Date.parse(time)).getMonth() + 1;
   dayValue.value = new Date(Date.parse(time)).getDate();
+
+  expensesBtn.disabled = false;
+  optionalExpensesBtn.disabled = false;
+  countBtn.disabled = false;
 });
 
-expensesBtn.addEventListener('click', function () {
+expensesBtn.addEventListener('click', () => {
   let sum = 0;
-
   for (let i = 0; i < expensesItem.length; i++) {
-    let
-      a = expensesItem[i].value,
+    let a = expensesItem[i].value,
       b = expensesItem[++i].value;
 
-    if (typeof (a) === 'string' && typeof (a) != null && typeof (b) != null && a != "" && b != "" && a.length < 50) {
-      console.log("Done");
+    if ((typeof (a)) != null && (typeof (b)) != null && a != '' && b != '' && a.length < 50) {
       appData.expenses[a] = b;
       sum += +b;
     } else {
-      console.log("bad result");
-      i--;
+      i = i - 1;
     }
+    expensesValue.textContent = sum;
   }
-  expensesValue.textContent = sum;
 });
 
-optionalExpensesBtn.addEventListener('click', function () {
-  for (let i = 0; i <= optionalExpensesItem.length; i++) {
-    let questionOptExpenses = optionalExpensesItem[i].value;
-    appData.optionalExpenses[i] = questionOptExpenses;
+optionalExpensesBtn.addEventListener('click', () => {
+  for (let i = 0; i < optionalExpensesItem.length; i++) {
+    let opt = optionalExpensesItem[i].value;
+    appData.optionalExpenses[i] = opt;
     optionalExpensesValue.textContent += appData.optionalExpenses[i] + ' ';
   }
 });
 
-countBtn.addEventListener('click', function () {
+countBtn.addEventListener('click', () => {
   if (appData.budget != undefined) {
-    appData.moneyPerDay = (appData.budget / 30).toFixed();
+    appData.moneyPerDay = ((appData.budget - +expensesValue.textContent) / 30).toFixed();
     dayBudgetValue.textContent = appData.moneyPerDay;
-
     if (appData.moneyPerDay < 100) {
-      levelValue.textContent = "Минимальный уровень достатка!";
+      levelValue.textContent = 'Минимальный уровень достатка';
     } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 2000) {
-      levelValue.textContent = "Средний уровень достатка!";
+      levelValue.textContent = 'Средний уровень достатка';
     } else if (appData.moneyPerDay > 2000) {
-      levelValue.textContent = "Высокий уровень достатка!";
+      levelValue.textContent = 'Высокий уровень достатка';
     } else {
-      levelValue.textContent = "Что то пошло не так...";
+      levelValue.textContent = 'Произошла ошибка';
     }
   } else {
     dayBudgetValue.textContent = 'Произошла ошибка';
   }
 });
 
-incomeItem.addEventListener('input', function () {  // Can change 'input' on 'change'
+incomeItem.addEventListener('input', () => {
   let items = incomeItem.value;
-  appData.income = items.split(", ");
-  incomeValue.textContent = appData.income;
+  console.log(1);
+  if (isNaN(items) || items != '') {
+    appData.income = items.split(',');
+    incomeValue.textContent = appData.income;
+  }
 });
 
-checkSavings.addEventListener('click', function () {
-  appData.savings = (appData.savings === true) ? false : true;
+checkSavings.addEventListener("click", () => {
+  appData.savings = (appData.savings == true) ? false : true;
 });
 
 function calculateProcent() {
@@ -120,11 +126,11 @@ percentValue.addEventListener('input', function () {
   calculateProcent();
 });
 
-let appData = {
+const appData = {
   budget: money,
-  timeData: time,
   expenses: {},
   optionalExpenses: {},
   income: [],
+  timeData: time,
   savings: false,
 };
